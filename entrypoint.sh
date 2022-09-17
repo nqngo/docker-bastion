@@ -2,9 +2,9 @@
 
 # Generate host keys on first run
 if [ ! -f "/etc/ssh/hostkeys/ssh_host_rsa_key" ]; then
-    ssh-keygen -q -N "" -t ed25519 -f /etc/ssh/hostkeys/ssh_host_ed25519_key
-    ssh-keygen -q -N "" -t rsa -b 4096 -f /etc/ssh/hostkeys/ssh_host_rsa_key
-    ssh-keygen -q -N "" -t ecdsa -f /etc/ssh/hostkeys/ssh_host_ecdsa_key
+    ssh-keygen -q -N "" -t ed25519 -f /host_keys.d/ssh_host_ed25519_key
+    ssh-keygen -q -N "" -t rsa -b 4096 -f /host_keys.d/ssh_host_rsa_key
+    ssh-keygen -q -N "" -t ecdsa -f /host_keys.d/ssh_host_ecdsa_key
 fi
 
 # Fetch a remote public ssh key file and store in bastion authorized_keys

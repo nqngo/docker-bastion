@@ -15,7 +15,7 @@ $ docker volume create hostkeys
 $ docker run -d \
     --name bastion \
     --hostname bastion \
-    --mount source=hostkeys,target=/etc/ssh/hostkeys \
+    --mount source=hostkeys,target=/host_keys.d \
     --add-host docker-host:172.17.0.1 \
     --publish 2222:22/tcp \
     --env "REMOTE_SSH_URL=https://github.com/nqngo.keys" \
@@ -40,7 +40,7 @@ TO BE UPDATED
 
 ## Persistent Volumes
 
-- `source=<any>,target=/etc/ssh/hostkeys`, the default hostkeys are stored in `/etc/ssh/hostkeys` in the container and is generated if not existed during init.
+- `source=<any>,target=/etc/ssh/host_keys.d`, the default hostkeys are stored in `/host_keys.d` in the container and is generated if not existed during init.
 
 # Appendix
 
