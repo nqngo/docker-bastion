@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  bastion:
+    image: nqngo1:latest
+    container_name: bastion
+    hostname: bastion
+    restart: unless-stopped
+    expose:
+      - 22/tcp
+    ports:
+      - 2222:22/tcp
+    environment:
+      REMOTE_SSH_URL: "https://github.com/nqngo.keys"
+      REMOTE_GPG_URL: "https://github.com/nqngo.gpg"
+    volumes:
+      - ssh_hostkeys:/etc/ssh/hostkeys:rw
+    extra_hosts:
+      - docker-host:172.17.0.1
+    networks:
+      - bastion
+
+networks:
+  bastion:
+    driver: bridge
+
+volumes:
+  ssh_hostkeys:
