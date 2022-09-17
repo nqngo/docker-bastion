@@ -6,6 +6,27 @@ The image is specifically designed to support `gpg-agent` forwarding to ensure y
 
 This `Docker` image default sshd_config is opinionated and based on [https://infosec.mozilla.org/guidelines/openssh.html](https://infosec.mozilla.org/guidelines/openssh.html). The default ssh user is `bastion`.
 
+The use case for this image is envisioned as followed:
+
+```mermaid
+flowchart LR
+    client(Users)
+
+    subgraph PVN [Private Network]
+
+        subgraph PNET [Public Subnet]
+            bastion
+        end
+
+        subgraph VNET [Private Subnet]
+            vm(VM)
+        end
+        bastion --> |Forward| vm
+    end
+
+    client .-> |ProxyJump| bastion
+```
+
 # Usage
 
 ## Run `bastion` image and expose port `2222` to outside the host machine
@@ -41,6 +62,26 @@ TO BE UPDATED
 ## Persistent Volumes
 
 - `source=<any>,target=/etc/ssh/host_keys.d`, the default hostkeys are stored in `/host_keys.d` in the container and is generated if not existed during init.
+
+# How to setup GPG forwarding
+
+Example `.ssh/config` on the User local machine, providing the `gpg-agent` is running and you want to forward the `gpg-agent` to the `target` machine:
+
+```bash
+Host bastion
+  Hostname bastion.example.com
+  User bastion
+  Port 2222
+  RemoteForward /home/bastion/.gnupg/S.gpg-agent /home/$username/.gnupg/S.gpg-agent.extra
+
+Host target
+  Hostname target.internal.local
+  User $username
+  ForwardAgent yes
+  ProxyJump bastion
+  ExitOnForwardFailure yes
+  RemoteForward /run/user/1000/gnupg/S.gpg-agent /home/$username/.gnupg/S.gpg-agent.extra
+```
 
 # Appendix
 
