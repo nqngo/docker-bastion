@@ -31,6 +31,17 @@ See example [docker-compose.yml](docker-compose.yml) file.
 
 TO BE UPDATED
 
+## Environment Variables
+
+- `REMOTE_SSH_URL= <string>`: The remote ssh public keys to add to `bastion` `authorized_keys`.
+- `REMOTE_GPG_URL= <string>`: The remote gpg public keys to add to `bastion` gpg key chain.
+- `ALLOW_X11_FORWARDING= <any>`: Enable X11 Forwarding. Set any value to enable the option (except 0). Default is `no`.
+- `LISTEN_PORT= <int>`: Change the default SSH listening port. You must expose the port in addition to the default port `22`.
+
+## Persistent Volumes
+
+- `source=<any>,target=/etc/ssh/hostkeys`, the default hostkeys are stored in `/etc/ssh/hostkeys` in the container and is generated if not existed during init.
+
 # Appendix
 
 ## Version naming convention
