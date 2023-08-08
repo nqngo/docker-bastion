@@ -1,4 +1,4 @@
-FROM alpine:latest AS install_packages
+FROM alpine:3.18.3 AS install_packages
 ARG VERSION
 LABEL maintainer="Nhat Ngo"
 LABEL version=$VERSION
