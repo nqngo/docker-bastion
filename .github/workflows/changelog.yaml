@@ -55,8 +55,8 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           branch: "changelog-update"
-          commit-message: "Generate CHANGELOG.md for {{ env.DATE }}"
-          title: "Generate CHANGELOG.md for {{ env.DATE }}"
+          commit-message: Generate CHANGELOG.md for ${{ env.DATE }}
+          title: Generate CHANGELOG.md for ${{ env.DATE }}
           body: |
             docker.io/alpine@${{ env.ALPINE_SHA }}
             - ${{ env.OPENSSH_VER }}
