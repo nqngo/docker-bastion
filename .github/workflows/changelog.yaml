@@ -23,7 +23,8 @@ jobs:
       - name: Check versions of openssh-server, gnupg, and curl
         run: |
           docker run --rm alpine:latest sh -c '
-          'apk update && apk add --no-cache openssh-server gnupg curl &&
+           apk update &&
+           apk add --no-cache openssh-server gnupg curl &&
            apk info -v openssh-server gnupg curl' > versions.txt
 
           OPENSSH_VER=$(grep openssh-server versions.txt | awk '{print $1}')
