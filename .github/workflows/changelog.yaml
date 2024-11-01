@@ -46,17 +46,17 @@ jobs:
           echo "- $OPENSSH_VER" >> CHANGELOG.md
           echo "- $GNUPG_VER" >> CHANGELOG.md
           echo "- $CURL_VER" >> CHANGELOG.md
-          echo "" >> CHANGELOG.md
 
           cat CHANGELOG.md
           rm versions.txt
+          echo "DATE=$DATE" >> $GITHUB_ENV
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
           branch: "changelog-update"
-          commit-message: "Generate CHANGELOG.md for $(date '+%Y-%m')"
-          title: "Generate CHANGELOG.md for $(date '+%Y-%m')"
+          commit-message: "Generate CHANGELOG.md for {{ env.DATE }}"
+          title: "Generate CHANGELOG.md for {{ env.DATE }}"
           body: |
             docker.io/alpine@${{ env.ALPINE_SHA }}
             - ${{ env.OPENSSH_VER }}
