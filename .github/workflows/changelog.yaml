@@ -33,9 +33,13 @@ jobs:
           GNUPG_VER=$(grep -o 'gnupg-.*' versions.txt | awk '{print $1}')
           CURL_VER=$(grep -o 'curl-.*' versions.txt | awk '{print $1}')
 
-          echo "OPENSSH_VER=$OPENSSH_VER" >> $GITHUB_ENV
-          echo "GNUPG_VER=$GNUPG_VER" >> $GITHUB_ENV
-          echo "CURL_VER=$CURL_VER" >> $GITHUB_ENV
+          echo $OPENSSH_VER
+          echo $GNUPG_VER
+          echo $CURL_VER
+
+          echo "OPENSSH_VER=$OPENSSH_VER" >> "$GITHUB_ENV"
+          echo "GNUPG_VER=$GNUPG_VER" >> "$GITHUB_ENV"
+          echo "CURL_VER=$CURL_VER" >> "$GITHUB_ENV"
 
       - name: Update CHANGELOG.md
         run: |
