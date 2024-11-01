@@ -25,13 +25,13 @@ jobs:
           docker run --rm alpine:latest sh -c '
            apk update &&
            apk add --no-cache openssh-server gnupg curl &&
-           apk info -v openssh-server gnupg curl' > versions.txt
+           apk info -w openssh-server gnupg curl' > versions.txt
 
           cat versions.txt
 
-          OPENSSH_VER=$(grep openssh-server versions.txt | awk '{print $1}')
-          GNUPG_VER=$(grep gnupg versions.txt | awk '{print $1}')
-          CURL_VER=$(grep curl versions.txt | awk '{print $1}')
+          OPENSSH_VER=$(grep -o 'openssh-server-.*' versions.txt | awk '{print $1}')
+          GNUPG_VER=$(grep -o 'gnupg-.*' versions.txt | awk '{print $1}')
+          CURL_VER=$(grep -o 'curl-*' versions.txt | awk '{print $1}')
 
           echo "OPENSSH_VER=$OPENSSH_VER" >> $GITHUB_ENV
           echo "GNUPG_VER=$GNUPG_VER" >> $GITHUB_ENV
