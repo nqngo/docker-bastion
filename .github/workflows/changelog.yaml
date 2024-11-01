@@ -25,7 +25,7 @@ jobs:
           docker run --rm alpine:latest sh -c '
            apk update &&
            apk add --no-cache openssh-server gnupg curl &&
-           apk info -w openssh-server gnupg curl' > versions.txt
+           apk info -w openssh-server gnupg curl' | tail -n6 > versions.txt
 
           cat versions.txt
 
