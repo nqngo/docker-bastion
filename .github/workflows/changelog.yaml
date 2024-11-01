@@ -31,7 +31,7 @@ jobs:
 
           OPENSSH_VER=$(grep -o 'openssh-server-.*' versions.txt | awk '{print $1}')
           GNUPG_VER=$(grep -o 'gnupg-.*' versions.txt | awk '{print $1}')
-          CURL_VER=$(grep -o 'curl-*' versions.txt | awk '{print $1}')
+          CURL_VER=$(grep -o 'curl-.*' versions.txt | awk '{print $1}')
 
           echo "OPENSSH_VER=$OPENSSH_VER" >> $GITHUB_ENV
           echo "GNUPG_VER=$GNUPG_VER" >> $GITHUB_ENV
