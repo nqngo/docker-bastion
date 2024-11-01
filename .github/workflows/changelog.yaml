@@ -27,6 +27,8 @@ jobs:
            apk add --no-cache openssh-server gnupg curl &&
            apk info -v openssh-server gnupg curl' > versions.txt
 
+          cat versions.txt
+
           OPENSSH_VER=$(grep openssh-server versions.txt | awk '{print $1}')
           GNUPG_VER=$(grep gnupg versions.txt | awk '{print $1}')
           CURL_VER=$(grep curl versions.txt | awk '{print $1}')
