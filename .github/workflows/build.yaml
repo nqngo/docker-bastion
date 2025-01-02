@@ -40,6 +40,7 @@ jobs:
 
       - name: Set image tags
         uses: docker/metadata-action@v5
+        id: docker_metadata
         with:
           images: |
             ghcr.io/${{ github.repository }}/bastion
@@ -54,4 +55,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           context: .
           push: true
-          tags: ${{ steps.metadata.outputs.tags }}
+          tags: ${{ steps.docker_metadata.outputs.tags }}
+          labels: ${{ steps.docker_metadata.outputs.labels }}
