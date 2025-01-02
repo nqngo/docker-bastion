@@ -46,7 +46,7 @@ $ docker run -d \
 
 ## Run `bastion` image in docker-compose
 
-See example [docker-compose.yml](docker-compose.yml) file.
+See example [docker-compose.yml](https://github.com/nqngo/docker-bastion/blob/main/docker-compose.yml).
 
 ## Deploy `bastion` on a k8s edge cluster
 
@@ -87,7 +87,9 @@ Host target
 
 ## Version naming convention
 
-This `docker` image follows `<year>.<month>-<fix_version>` format. The rationale behind this convention is for this docker image to be automated build and publish every 3 months to get the latest `alpine`, `openssh` and `gnupg` version.
+This `docker` image follows `<year>.<month>(-<hotfix>)` format. The rationale behind this convention is for this docker image to be automated build and publish at the start of every month to get the latest `alpine`, `openssh` and `gnupg` version.
+
+If there is a hotfix, it will be appended to the version number. (e.g. `2024.11-1`). Otherwise, the version number will simply be the `<year>.<month>`. (e.g. `2024.11`)
 
 ## Default sshd options
 
