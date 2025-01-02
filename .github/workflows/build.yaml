@@ -5,11 +5,14 @@ on:
     types: [closed]
     branches:
         - main
-
+  workflow_dispatch:
 
 jobs:
   build-and-release:
-    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'changelog-update'
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+       github.event.pull_request.head.ref == 'changelog-update')
     runs-on: ubuntu-latest
 
     steps:
