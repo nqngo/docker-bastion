@@ -1,6 +1,6 @@
-## 2025-07
+## 2026-01
 ----------------
-docker.io/alpine@sha256:8a1f59ffb675680d47db6337b49d22281a139e9d709335b492be023728e11715
-- openssh-server-10.0_p1-r7
-- gnupg-2.4.7-r0
-- curl-8.14.1-r1
+docker.io/alpine@sha256:865b95f46d98cf867a156fe4a135ad3fe50d2056aa3f25ed31662dff6da4eb62
+- openssh-server-10.2_p1-r0
+- gnupg-2.4.8-r1
+- curl-8.17.0-r1
