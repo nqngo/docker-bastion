@@ -4,14 +4,27 @@ on:
   pull_request:
     types: [closed]
     branches:
-        - main
+      - main
+  push:
+    tags:
+      - 'v*'
+      - '20*'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: build-and-release-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-release:
     if: |
       github.event_name == 'workflow_dispatch' ||
-      (github.event.pull_request.merged == true &&
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true &&
        github.event.pull_request.head.ref == 'changelog-update')
     runs-on: ubuntu-latest
 
@@ -57,6 +70,7 @@ jobs:
           tags: |
             type=raw,value=latest
             type=raw,value={{ date 'YYYY.MM' }}
+            type=ref,event=tag
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -66,3 +80,5 @@ jobs:
           push: true
           tags: ${{ steps.docker_metadata.outputs.tags }}
           labels: ${{ steps.docker_metadata.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
