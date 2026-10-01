@@ -36,7 +36,7 @@ ClientAliveInterval 300
 ClientAliveCountMax 2
 TCPKeepAlive yes
 
-# Bastion Forwarding Controls (Defaults can be overridden via entrypoint.sh)
+# Bastion Forwarding Controls (only X11Forwarding and PermitTunnel are overridable via entrypoint.sh)
 AllowTcpForwarding yes
 AllowAgentForwarding yes
 AllowStreamLocalForwarding yes
