@@ -6,6 +6,14 @@ on:
   schedule:
     - cron: "0 0 1 */1 *"  # Runs on the first of every month
 
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: changelog-update
+  cancel-in-progress: true
+
 jobs:
   update_changelog:
     runs-on: ubuntu-latest
@@ -20,34 +28,42 @@ jobs:
           ALPINE_SHA=$(docker image inspect alpine:latest --format '{{index .RepoDigests 0}}' | cut -d'@' -f2)
           echo "ALPINE_SHA=$ALPINE_SHA" >> $GITHUB_ENV
 
-      - name: Check versions of openssh-server, gnupg, and curl
+      - name: Check versions of openssh-server, openssh-client, gnupg, and curl
         run: |
           docker run --rm alpine:latest sh -c '
            apk update &&
-           apk add --no-cache openssh-server gnupg curl &&
-           apk info -w openssh-server gnupg curl' | tail -n9 > versions.txt
+           apk add --no-cache openssh-server openssh-client gnupg curl &&
+           apk info -w openssh-server openssh-client gnupg curl' > versions.txt
 
           cat versions.txt
 
-          OPENSSH_VER=$(grep -o 'openssh-server-.*' versions.txt | awk '{print $1}')
+          OPENSSH_SERVER_VER=$(grep -o 'openssh-server-[0-9].*' versions.txt | head -n1)
+          OPENSSH_CLIENT_VER=$(grep -o 'openssh-client-[0-9].*' versions.txt | head -n1 || grep -o 'openssh-client-default-[0-9].*' versions.txt | head -n1)
           GNUPG_VER=$(grep -o 'gnupg-.*' versions.txt | awk '{print $1}')
           CURL_VER=$(grep -o 'curl-.*' versions.txt | awk '{print $1}')
 
-          echo "OPENSSH_VER=$OPENSSH_VER" >> "$GITHUB_ENV"
+          echo "OPENSSH_SERVER_VER=$OPENSSH_SERVER_VER" >> "$GITHUB_ENV"
+          echo "OPENSSH_CLIENT_VER=$OPENSSH_CLIENT_VER" >> "$GITHUB_ENV"
           echo "GNUPG_VER=$GNUPG_VER" >> "$GITHUB_ENV"
           echo "CURL_VER=$CURL_VER" >> "$GITHUB_ENV"
 
-      - name: Update CHANGELOG.md
+      - name: Prepend new entry to CHANGELOG.md
         run: |
           DATE=$(date '+%Y-%m')
-          echo "## $DATE" > CHANGELOG.md
-          echo "----------------" >> CHANGELOG.md
-          echo "docker.io/alpine@$ALPINE_SHA" >> CHANGELOG.md
-          echo "- $OPENSSH_VER" >> CHANGELOG.md
-          echo "- $GNUPG_VER" >> CHANGELOG.md
-          echo "- $CURL_VER" >> CHANGELOG.md
+          HEADER="## $DATE\n----------------\ndocker.io/alpine@$ALPINE_SHA\n- $OPENSSH_SERVER_VER\n- $OPENSSH_CLIENT_VER\n- $GNUPG_VER\n- $CURL_VER"
 
-          cat CHANGELOG.md
+          # Prepend new entry if not already present in CHANGELOG.md
+          if [ -f CHANGELOG.md ]; then
+            if grep -q "^## $DATE" CHANGELOG.md; then
+              echo "CHANGELOG.md already has an entry for $DATE; skipping duplicate prepend."
+            else
+              printf "%b\n\n%s\n" "$HEADER" "$(cat CHANGELOG.md)" > CHANGELOG.md
+            fi
+          else
+            printf "%b\n" "$HEADER" > CHANGELOG.md
+          fi
+
+          head -n 35 CHANGELOG.md
           rm versions.txt
           echo "DATE=$DATE" >> $GITHUB_ENV
 
@@ -59,7 +75,8 @@ jobs:
           title: Generate CHANGELOG.md for ${{ env.DATE }}
           body: |
             docker.io/alpine@${{ env.ALPINE_SHA }}
-            - ${{ env.OPENSSH_VER }}
+            - ${{ env.OPENSSH_SERVER_VER }}
+            - ${{ env.OPENSSH_CLIENT_VER }}
             - ${{ env.GNUPG_VER }}
             - ${{ env.CURL_VER }}
 
