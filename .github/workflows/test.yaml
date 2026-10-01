@@ -1,0 +1,33 @@
+name: Test Bastion Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image locally
+        run: |
+          docker build -t bastion:test .
+
+      - name: Make test harness executable
+        run: |
+          chmod +x ./tests/test_bastion.sh
+
+      - name: Run automated test harness
+        run: |
+          ./tests/test_bastion.sh bastion:test
