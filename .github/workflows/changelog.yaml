@@ -37,8 +37,11 @@ jobs:
 
           cat versions.txt
 
-          OPENSSH_SERVER_VER=$(grep -o 'openssh-server-[0-9].*' versions.txt | head -n1)
-          OPENSSH_CLIENT_VER=$(grep -o 'openssh-client-[0-9].*' versions.txt | head -n1 || grep -o 'openssh-client-default-[0-9].*' versions.txt | head -n1)
+          OPENSSH_SERVER_VER=$(grep -o 'openssh-server-[0-9].*' versions.txt | head -n1 | awk '{print $1}')
+          OPENSSH_CLIENT_VER=$(grep -o 'openssh-client-[0-9].*' versions.txt | head -n1 | awk '{print $1}')
+          if [ -z "$OPENSSH_CLIENT_VER" ]; then
+            OPENSSH_CLIENT_VER=$(grep -o 'openssh-client-default-[0-9].*' versions.txt | head -n1 | awk '{print $1}')
+          fi
           GNUPG_VER=$(grep -o 'gnupg-.*' versions.txt | awk '{print $1}')
           CURL_VER=$(grep -o 'curl-.*' versions.txt | awk '{print $1}')
 
