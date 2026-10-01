@@ -1,11 +1,14 @@
 #!/usr/bin/env sh
 
 # Generate host keys on first run
-if [ ! -f "/etc/ssh/hostkeys/ssh_host_rsa_key" ]; then
+if [ ! -f "/host_keys.d/ssh_host_ed25519_key" ]; then
     ssh-keygen -q -N "" -t ed25519 -f /host_keys.d/ssh_host_ed25519_key
-    ssh-keygen -q -N "" -t rsa -b 4096 -f /host_keys.d/ssh_host_rsa_key
-    ssh-keygen -q -N "" -t ecdsa -f /host_keys.d/ssh_host_ecdsa_key
 fi
+
+# Ensure gnupg directory exists for GPG socket forwarding
+mkdir -p /home/bastion/.gnupg
+chmod 700 /home/bastion/.gnupg
+chown bastion:bastion /home/bastion/.gnupg
 
 # Fetch a remote public ssh key file and store in bastion authorized_keys
 if [ -n "${REMOTE_SSH_URL}" ]; then
@@ -30,9 +33,15 @@ if [ -n "${LISTEN_PORT}" ]; then
 else
     OPT_LISTEN_PORT="-o Port=22"
 fi
+if [ -n "${PERMIT_TUNNEL}" ]; then
+    OPT_TUNNEL="-o PermitTunnel=${PERMIT_TUNNEL}"
+else
+    OPT_TUNNEL="-o PermitTunnel=no"
+fi
 
 
 # Start sshd
 /usr/sbin/sshd -D -e \
     $OPT_X11_FORWARDING \
-    $OPT_LISTEN_PORT
+    $OPT_LISTEN_PORT \
+    $OPT_TUNNEL
